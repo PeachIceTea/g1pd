@@ -235,3 +235,4 @@ end
 
 clearPartyDisplay()
 gui.register(update)
+vba.print("g1pd 1.1 loaded <3")
