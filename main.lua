@@ -1,3 +1,5 @@
+-- Copyright 2018 Jonas Thiem
+
 -- Data
 local partyAddress = 0x0000D163
 local pkmDB = {
@@ -220,12 +222,12 @@ local function update()
 end
 
 local function clearPartyDisplay()
-    local newPNG = io.open("./sprites/0.png", "rb")
+    local newPNG = io.open("./sprites/0.png", "r+")
     local newData = newPNG:read("*a")
     newPNG:flush()
 
     for i = 1, 6, 1 do
-        local oldPNG = io.open("./party/p" .. tostring(i) .. ".png", "wb")
+        local oldPNG = io.open("./party/p" .. tostring(i) .. ".png", "w+")
         oldPNG:write(newData)
         oldPNG:flush()
     end
