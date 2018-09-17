@@ -222,12 +222,12 @@ local function update()
 end
 
 local function clearPartyDisplay()
-    local newPNG = io.open("./sprites/0.png", "r+")
+    local newPNG = io.open("./sprites/0.png", "rb+")
     local newData = newPNG:read("*a")
     newPNG:flush()
 
     for i = 1, 6, 1 do
-        local oldPNG = io.open("./party/p" .. tostring(i) .. ".png", "w+")
+        local oldPNG = io.open("./party/p" .. tostring(i) .. ".png", "wb+")
         oldPNG:write(newData)
         oldPNG:flush()
     end
