@@ -17,3 +17,6 @@ This script allows streamers to display their current party to their viewers.
 6. Run VBA and when the game is loaded. Load the script from Tools/Lua Scripting/New Lua Script Window...
 
 7. Add the png files in the "party" folder to your OBS overlay.
+
+## Note
+Currently only Pokemon Yellow is supported. Please open an issue if you need a version for other games.
