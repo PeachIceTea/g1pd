@@ -1,7 +1,7 @@
 # g1pd - Gen 1 Pokemon Display
 
 ## What?
-This script streamers to display their current party to their viewers. 
+This script allows streamers to display their current party to their viewers
 
 ## Setup
 1. Get [Viusal Boy Advanced Rerecording](https://github.com/TASVideos/vba-rerecording/releases) if you don't already use it.
