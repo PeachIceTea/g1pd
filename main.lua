@@ -1,7 +1,29 @@
 -- Copyright 2018 Jonas Thiem
 
+local partyAddress
+local firstLetterOfPokemonVersion = memory.gbromreadshortunsigned(0x000013C)
+if firstLetterOfPokemonVersion == 89 then 
+    vba.print("Pokemon Yellow detected.")
+    partyAddress = 0x0000D163
+elseif firstLetterOfPokemonVersion == 66 or firstLetterOfPokemonVersion == 82 then
+    vba.print("Pokemon Blue/Red detected.") 
+    partyAddress = 0x0000D164 -- Thats for Blue Kaizo and might not acutally be Blue
+end
+
+local numberedSprites
+local numberPNG = io.open("./sprites/1.png", "rb+")
+
+if numberPNG ~= nil then
+    vba.print("Using numbered sprites.")
+    numberedSprites = true
+    numberPNG:flush()
+else
+    vba.print("Using named sprites.")
+    numberedSprites = false
+end
+
 -- Data
-local partyAddress = 0x0000D163
+
 local pkmDB = {
     0x99, -- bulba
     0x09, -- ivy
@@ -156,6 +178,28 @@ local pkmDB = {
     0x15, -- mew
 }
 
+local pkmNameDB={"Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard",
+    "Squirtle", "Wartortle", "Blastoise", "Caterpie", "Metapod", "Butterfree",
+    "Weedle", "Kakuna", "Beedrill", "Pidgey", "Pidgeotto", "Pidgeot", "Rattata", "Raticate",
+    "Spearow", "Fearow", "Ekans", "Arbok", "Pikachu", "Raichu", "Sandshrew", "Sandslash",
+    "NidoranF", "Nidorina", "Nidoqueen", "NidoranM", "Nidorino", "Nidoking",
+    "Clefairy", "Clefable", "Vulpix", "Ninetales", "Jigglypuff", "Wigglytuff",
+    "Zubat", "Golbat", "Oddish", "Gloom", "Vileplume", "Paras", "Parasect", "Venonat", "Venomoth",
+    "Diglett", "Dugtrio", "Meowth", "Persian", "Psyduck", "Golduck", "Mankey", "Primeape",
+    "Growlithe", "Arcanine", "Poliwag", "Poliwhirl", "Poliwrath", "Abra", "Kadabra", "Alakazam",
+    "Machop", "Machoke", "Machamp", "Bellsprout", "Weepinbell", "Victreebel", "Tentacool", "Tentacruel",
+    "Geodude", "Graveler", "Golem", "Ponyta", "Rapidash", "Slowpoke", "Slowbro",
+    "Magnemite", "Magneton", "Farfetch'd", "Doduo", "Dodrio", "Seel", "Dewgong", "Grimer", "Muk",
+    "Shellder", "Cloyster", "Gastly", "Haunter", "Gengar", "Onix", "Drowzee", "Hypno",
+    "Krabby", "Kingler", "Voltorb", "Electrode", "Exeggcute", "Exeggutor", "Cubone", "Marowak",
+    "Hitmonlee", "Hitmonchan", "Lickitung", "Koffing", "Weezing", "Rhyhorn", "Rhydon", "Chansey",
+    "Tangela", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie",
+    "Mr. Mime", "Scyther", "Jynx", "Electabuzz", "Magmar", "Pinsir", "Tauros", "Magikarp", "Gyarados",
+    "Lapras", "Ditto", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Porygon", "Omanyte", "Omastar",
+    "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres",
+    "Dratini", "Dragonair", "Dragonite", "Mewtwo", "Mew"
+}
+
 -- code
 
 local prevParty = {0, 0, 0, 0, 0, 0}
@@ -202,6 +246,14 @@ local function getPokedexNumber(id)
     return 0
 end
 
+local function getPNGPath(id)
+    if numberedSprites then
+        return "./sprites/" .. tostring(getPokedexNumber(id)) .. ".png"
+    else
+        return "./sprites/" .. pkmNameDB[getPokedexNumber(id)] .. ".png"
+    end
+end
+
 local function update()
     readParty()
 
@@ -209,7 +261,8 @@ local function update()
     if changeMap[1] then
         for i = 1, 6, 1 do
             if changeMap[i + 1] then
-                local newPNG = io.open("./sprites/" .. tostring(getPokedexNumber(party[i])) .. ".png", "rb") 
+                local newPNG = io.open(getPNGPath(party[i]), "rb") 
+                if newPNG == nil then vba.print("ERROR: " .. getPNGPath(party[i]) .. " is missing.") end
                 local newData = newPNG:read("*a")
                 newPNG:flush()
                 
@@ -223,6 +276,7 @@ end
 
 local function clearPartyDisplay()
     local newPNG = io.open("./sprites/0.png", "rb+")
+    if newPNG == nil then vba.print("ERROR: 0.png is missing in the sprites folder.") end
     local newData = newPNG:read("*a")
     newPNG:flush()
 
@@ -235,4 +289,4 @@ end
 
 clearPartyDisplay()
 gui.register(update)
-vba.print("g1pd 1.1 loaded <3")
+vba.print("g1pd 1.2 loaded <3")
